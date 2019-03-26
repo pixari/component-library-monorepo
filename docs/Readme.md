@@ -1,5 +1,5 @@
-# Foo
-> adasd
+# Monorepo solution for multiple VueJs Apps and a shared component library. 
+> This is still a "work in progress" tutorial. It actually already works, but I still have to refine some steps. Feel free to help me / send me your suggestions.
 
 ## Getting Started
 
