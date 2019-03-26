@@ -9,7 +9,7 @@ Let's start by installing Lerna globally with npm:
 ```bash
 $ npm install --global lerna
 ```
-
+****
 Next we have to create a new git repository:
 
 ```bash
@@ -73,12 +73,12 @@ configure(loadStories, module);
 
 ## Add the first component to the component library
 
-We create a ../stories/index.stories.js file and write our first story:
+We create in the root a packages/index.stories.js file and write our first story:
 
 ```js
 import Vue from 'vue';
 import { storiesOf } from '@storybook/vue';
-import MyButton from './Button/Button.vue';
+import MyButton from './Button/src/Button.vue';
 
 storiesOf('Button', module)
   .add('as a component', () => ({
@@ -98,10 +98,11 @@ storiesOf('Button', module)
 Now we create the real "Button" component:
 
 ```bash
-./packages/Button/Button.vue
+/packages/Button
+  /src
+    Button.vue
 ```
 
-Button.vue: 
 ```html
 <template>
   <button type="button"><slot /></button>
@@ -114,35 +115,31 @@ export default {
 </script>
 ```
 
-And we create the package.json of the component: 
+The index.js
+```bash
+/packages/Button
+  src/index.js
+```
+
+```bash
+import MyButton from './Button.vue';
+export default MyButton;
+```
+
+And the package.json:
 
 ```json
 {
   "name": "@mylibrary/my-button",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Just a simple button component",
   "main": "dist/index.js",
   "module": "src/index.js",
   "scripts": {
-    "transpile": "babel src -d dist --ignore '**/*.spec.js,**/*.stories.js'"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env",
-      "vue"
-    ],
-    "env": {
-      "test": {
-        "plugins": [
-          "transform-es2015-modules-commonjs"
-        ]
-      }
-    }
+    "transpile": "vue-cli-service build --target lib ./src/index.js"
   }
 }
 ```
-
-
 
 ### Start Storybook
 Now you are ready to start Storybook and play with your first component:
@@ -151,7 +148,10 @@ Now you are ready to start Storybook and play with your first component:
 $ npm run storybook
 ```
 
-[IMG Storybook 1]
+And you should see it running here:
+```url
+http://localhost:51368
+```
 
 ## Create a VueJs App
 
@@ -160,6 +160,7 @@ To install the Vue CLI, use this command:
 
 ```bash
 $ npm install -g @vue/cli
+$ npm install --save-dev @vue/cli-service
 ```
 
 ### Create a new project
@@ -177,6 +178,35 @@ And please choose the easiest option:
 
 In this tutorial we don't want to build the best VueJs App possible, but just show how to share a component library between VueJs Apps.
 
+## Add eslint configuration
+
+Create ./packages/my-app/.eslintrc.js
+
+```js
+module.exports = {
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:vue/essential"
+    ],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "vue"
+    ],
+    "rules": {
+    }
+};
+```
 
 ### Run the App
 Let's run our new app:
@@ -201,27 +231,6 @@ Add the following dependency to your packages/my-app/package.json:
     "@mylibrary/my-button": "*"
   }
 }
-```
-
-And now we can "bootstrap" the packages in the current Lerna repo, install all of their dependencies and links any cross-dependencies:
-
-```bash
-$ lerna bootstrap
-```
-
-## Babel
-
-Type the following command to install the babel-cli and babel-core modules:
-
-```bash
-$ npm install babel-cli babel-core --save-dev
-```
-
-Type the following command to install the ECMAScript 2015 preset:
-
-```bash
-$ npm install babel-preset-es2015 --save-dev
-$ npm install @babel/cli --save-dev
 ```
 
 ## Fix eslint
@@ -250,22 +259,16 @@ module.exports = {
 }
 ```
 
+And now we can "bootstrap" the packages in the current Lerna repo, install all of their dependencies and links any cross-dependencies:
+
+In the root:
+```bash
+$ lerna bootstrap
+```
+
 ## Update the Vue App
 
-now..
-```js
-import Vue from 'vue'
-import App from './App.vue'
-import MyButton from '@mylibrary/my-button';
-
-Vue.config.productionTip = false
-Vue.component('my-button', MyButton);
-new Vue({
-  render: h => h(App),
-}).$mount('#app')
-```
-
-and update your HelloWorld component (my-app/src/components/HelloWorld.vue)
+Change the content of ./packages/my-app/src/main.js:
 
 ```js
 import Vue from 'vue'
@@ -278,3 +281,38 @@ new Vue({
   render: h => h(App),
 }).$mount('#app')
 ```
+
+and change the content of our HelloWorld component (./packages/my-app/src/components/HelloWorld.vue):
+
+```js
+<template>
+  <div class="hello">
+    <h1>{{ msg }}</h1>
+    <my-button>It Works!</my-button>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'HelloWorld',
+  props: {
+    msg: String
+  }
+}
+</script>
+```
+
+We now transpile our components:
+
+```bash
+$ lerna run transpile
+```
+
+run again..
+
+```bash
+$ cd packages/my-app && npm run serve
+```
+
+Go to http://localhost:8080 and you should se the button in the middle of the HelloWorld page :)
+
