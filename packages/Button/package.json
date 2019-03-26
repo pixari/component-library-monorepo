@@ -2,9 +2,9 @@
   "name": "@mylibrary/my-button",
   "version": "0.2.0",
   "description": "Just a simple button component",
-  "main": "dist/index.js",
+  "main": "dist/index.common.js",
   "module": "src/index.js",
   "scripts": {
-    "transpile": "vue-cli-service build --target lib ./src/index.js"
+    "transpile": "vue-cli-service build --mode production --name index --formats commonjs --target lib ./src/index.js"
   }
 }

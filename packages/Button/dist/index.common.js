@@ -253,4 +253,4 @@ var component = normalizeComponent(
 /***/ })
 
 /******/ });
-//# sourceMappingURL=my-button.common.js.map
+//# sourceMappingURL=index.common.js.map
