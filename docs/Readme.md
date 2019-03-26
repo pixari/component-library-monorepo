@@ -116,9 +116,32 @@ export default {
 
 And we create the package.json of the component: 
 
-```bash
-$ npm init
+```json
+{
+  "name": "@mylibrary/my-button",
+  "version": "0.1.0",
+  "description": "Just a simple button component",
+  "main": "dist/index.js",
+  "module": "src/index.js",
+  "scripts": {
+    "transpile": "babel src -d dist --ignore '**/*.spec.js,**/*.stories.js'"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "vue"
+    ],
+    "env": {
+      "test": {
+        "plugins": [
+          "transform-es2015-modules-commonjs"
+        ]
+      }
+    }
+  }
+}
 ```
+
 
 
 ### Start Storybook
@@ -186,4 +209,72 @@ And now we can "bootstrap" the packages in the current Lerna repo, install all o
 $ lerna bootstrap
 ```
 
+## Babel
 
+Type the following command to install the babel-cli and babel-core modules:
+
+```bash
+$ npm install babel-cli babel-core --save-dev
+```
+
+Type the following command to install the ECMAScript 2015 preset:
+
+```bash
+$ npm install babel-preset-es2015 --save-dev
+$ npm install @babel/cli --save-dev
+```
+
+## Fix eslint
+
+```js
+const path = require('path');
+module.exports = {
+  chainWebpack: config => {
+    config.module
+      .rule('eslint')
+      .use('eslint-loader')
+      .tap(options => {
+        options.configFile = path.resolve(__dirname, ".eslintrc.js");
+        return options;
+      })
+  },
+  css: {
+    loaderOptions: {
+      postcss: {
+        config:{
+          path:__dirname
+        }
+      }
+    }
+  }
+}
+```
+
+## Update the Vue App
+
+now..
+```js
+import Vue from 'vue'
+import App from './App.vue'
+import MyButton from '@mylibrary/my-button';
+
+Vue.config.productionTip = false
+Vue.component('my-button', MyButton);
+new Vue({
+  render: h => h(App),
+}).$mount('#app')
+```
+
+and update your HelloWorld component (my-app/src/components/HelloWorld.vue)
+
+```js
+import Vue from 'vue'
+import App from './App.vue'
+import MyButton from '@mylibrary/my-button';
+
+Vue.config.productionTip = false
+Vue.component('my-button', MyButton);
+new Vue({
+  render: h => h(App),
+}).$mount('#app')
+```

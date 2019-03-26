@@ -2,8 +2,10 @@
   "name": "root",
   "private": true,
   "devDependencies": {
+    "@babel/cli": "^7.2.3",
     "@babel/core": "^7.4.0",
     "@storybook/vue": "^5.0.5",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-loader": "^8.0.5",
     "babel-preset-vue": "^2.0.2",
     "lerna": "^3.13.1",

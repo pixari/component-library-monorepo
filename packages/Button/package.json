@@ -1,6 +1,23 @@
 {
   "name": "@mylibrary/my-button",
-  "version": "1.1.0",
+  "version": "0.1.0",
   "description": "Just a simple button component",
-  "main": "dist/index.js"
+  "main": "dist/index.js",
+  "module": "src/index.js",
+  "scripts": {
+    "transpile": "babel src -d dist --ignore '**/*.spec.js,**/*.stories.js'"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "vue"
+    ],
+    "env": {
+      "test": {
+        "plugins": [
+          "transform-es2015-modules-commonjs"
+        ]
+      }
+    }
+  }
 }
