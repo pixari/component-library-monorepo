@@ -8,8 +8,8 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "vue": "^2.6.6",
-    "@mylibrary/my-button": "*"
+    "@mylibrary/my-button": "^0.1.0",
+    "vue": "^2.6.6"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.0",
